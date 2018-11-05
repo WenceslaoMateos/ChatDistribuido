@@ -4,7 +4,7 @@ var http = require('http');
 var readlineSync = require('readline-sync');
 
 /* ********DECLARACIÓN DE VARIABLES******** */
-var ipServidor;
+var ipServidor = "10.9.10.120";
 var puertoServidor = 6969;
 
 var delay;
@@ -15,16 +15,16 @@ var username;
 //ip y puerto donde va a escuchar
 var cliente = new net.Socket();
 var ipCliente = cliente.address();
-var puertoCliente;
+var puertoCliente = 6969;
 var connexiones;
 
 
 /* ************I/O DE CONSOLA*************** */
-var puertoCliente = readlineSync.question('Escriba el puerto del cliente: ');
-var ipServidor = readlineSync.question('Escriba la ip del servidor: ');
+//var puertoCliente = readlineSync.question('Escriba el puerto del cliente: ');
+//var ipServidor = readlineSync.question('Escriba la ip del servidor: ');
 
 /* ******CALCULO DE RELOJES****** */
-
+/*
 cliente.connect(ipServidor, puertoServidor, () => {
     var T1 = (new Date()).getTime();
     cliente.write(T1.toString());
