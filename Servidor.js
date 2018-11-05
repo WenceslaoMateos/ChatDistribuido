@@ -7,15 +7,9 @@ var delay = 256;
 
 var server = net.createServer((sock) => {
     sock.on('data', (data) => {
-
-        setTimeout(() => {
-            var T2 = (new Date()).getTime();
-            setTimeout(() => {
-                var T3 = (new Date()).getTime();
-                sock.write(data.toString() + "," + T2.toString() + "," + T3.toString());
-            }, delay);
-        }, delay);
-
+        var T2 = (new Date()).getTime();
+        var T3 = (new Date()).getTime();
+        sock.write(data.toString() + "," + T2.toString() + "," + T3.toString());
     });
     sock.on("end", () => {
         console.log('Se ha desconectado el usuario');
