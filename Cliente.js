@@ -52,7 +52,7 @@ http.get("http://" + ipServidor + ":" + puertoServidor + "/register?username=" +
     });
     response.on("end", () => {
         conexiones = JSON.parse(datos);
-        console.log(conexiones[0]);
+        console.log(conexiones);
     });
 
 }).on("error", (er) => {
