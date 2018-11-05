@@ -9,7 +9,7 @@ var PORT = 6969;
 var delay = 256;
 
 /* ********DECLARACIÓN DE PROTOTIPOS******** */
-function Cliente(username, ip, port){
+function Cliente(username, ip, port) {
     this.username = username;
     this.ip = ip;
     this.port = port;
@@ -28,32 +28,34 @@ function Cliente(username, ip, port){
 
     this.toJSON = () => {
         var externo = this;
-        return JSON.stringify({
+        return {
             username: externo.username,
             ip: externo.ip,
             port: externo.port
-        });
+        };
     }
 }
 
-function RegistroClientes(){
+function RegistroClientes() {
     this.clientes = [];
 
     this.registrarCliente = (cliente) => {
         this.clientes.push(cliente);
     }
-    
+
     this.toJSON = () => {
         var longitud = this.clientes.length;
         var i;
-        var res = "[";
-        if (longitud > 0){
+        var arreglo = {datos : []};
+        var res = '"{"datos":[';
+        if (longitud > 0) {
             for (i = 0; i < longitud - 1; i++)
                 res += this.clientes[i].toJSON() + ",";
+            arreglo.datos.push(this.clientes[i].toJSON())
             res += this.clientes[i].toJSON();
         }
-        res += "]";
-        return res;
+        res += ']}"';
+        return JSON.stringify(arreglo);
     }
 }
 
@@ -62,24 +64,23 @@ var registro = new RegistroClientes();
 /* ********OPERACIÓN DE LOS SERVIDORES******** */
 var servidorRegistro = http.createServer((req, res) => {
     var parseo, query, resultado, direccion, cliente;
-    if (req.method === "GET"){
+    if (req.method === "GET") {
         parseo = url.parse(req.url, true);
         direccion = parseo.pathname;
         query = parseo.query;
-        if (direccion === '/register'){
+        if (direccion === '/register') {
             try {
                 cliente = new Cliente(query.username, query.ip, query.port);
                 console.log(cliente);
                 registro.registrarCliente(cliente);
                 res.writeHead(200, {
                     'Date': (new Date()).toString(),
-                    'Content-Length': 2,
                     'Content-Type': 'text/string'
                 });
                 console.log(registro.toJSON());
                 res.end(registro.toJSON());
             }
-            catch (e){
+            catch (e) {
                 console.log(e);
                 res.writeHead(404);
                 res.end();
