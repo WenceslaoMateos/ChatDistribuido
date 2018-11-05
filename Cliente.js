@@ -13,6 +13,7 @@ var offset;
 var username;
 
 //ip y puerto donde va a escuchar
+var cliente = new net.Socket();
 var ipCliente = cliente.address();
 var puertoCliente;
 var connexiones;
@@ -37,7 +38,6 @@ lector.question('Escriba la ip del servidor: ', function (r) {
 
 /* ******CALCULO DE RELOJES****** */
 
-var cliente = new net.Socket();
 cliente.connect(ipServidor, puertoServidor, () => {
     var T1 = (new Date()).getTime();
     cliente.write(T1.toString());
