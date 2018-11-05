@@ -1,8 +1,8 @@
 /* ********DECLARACIÓN DE LIBRERIAS******** */
-//var net = require('net');
+var net = require('net');
 var http = require('http');
-//var readlineSync = require('readline-sync');
-//var ip = require("ip");
+var readlineSync = require('readline-sync');
+var ip = require("ip");
 
 /* ********DECLARACIÓN DE VARIABLES******** */
 var ipServidor = "127.0.0.1";
@@ -13,10 +13,11 @@ var offset;
 var username = "wence";
 
 //ip y puerto donde va a escuchar
-//var cliente = new net.Socket();
+var cliente = new net.Socket();
 var ipCliente = "127.0.0.1";
+//var ipCliente = ip.address();
 var puertoCliente = 6969;
-var connexiones;
+var conexiones;
 
 
 /* ************I/O DE CONSOLA*************** */
@@ -44,15 +45,14 @@ cliente.on('data', (data) => {
 /* *****REGISTRO POR HTTP*** */
 
 http.get("http://" + ipServidor + ":" + puertoServidor + "/register?username=" + encodeURIComponent(username) + "&ip=" + encodeURIComponent(ipCliente) + "&port=" + encodeURIComponent(puertoCliente), (response) => {
-    //response.setEncoding('utf8');
+    response.setEncoding('utf8');
     var datos = "";
     response.on("data", (data) => {
-        console.log(data);
         datos += data.toString();
-        //connexiones = JSON.parse(data.toString());
     });
     response.on("end", () => {
-        console.log(datos);
+        conexiones = JSON.parse(datos);
+        console.log(conexiones[0]);
     });
 
 }).on("error", (er) => {
