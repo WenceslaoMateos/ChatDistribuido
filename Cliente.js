@@ -1,5 +1,12 @@
 var net = require('net');
 var http = require('http');
+var readline = require('readline');
+
+// creado de elementos para lectura por consola de ip y puerto del servidor
+var lector = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
 var ipServidor = '10.9.10.44';
 var puertoServidor = 6969;
@@ -47,14 +54,19 @@ cliente.on('error', () => {
 var username;
 
 //ip y puerto donde va a escuchar
-var ip;
-var puerto;
+var ipCliente = cliente.address();
+var puertoCliente;
+var connexiones;
 
+lector.question('Escriba el puerto que desea abrir: ', function (r) {
+    puertoCliente = r;
+    lector.close();
+});
 
-
-http.get("http://" + ipServidor + ":" + puertoServidor + "/register?username=" + username + "&ip=" + ip + "&port=" + puerto, (response) => {
+http.get("http://" + ipServidor + ":" + puertoServidor + "/register?username=" + username + "&ip=" + ipCliente + "&port=" + puertoCliente, (response) => {
     response.setEncoding('utf8');
     response.on("data", (data) => {
-        console.log(data);
+        console.log(data.toString());
+        connexiones = JSON.parse(data.toString());
     });
 });
