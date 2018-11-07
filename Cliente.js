@@ -2,21 +2,22 @@
 var net = require('net');
 var http = require('http');
 var readlineSync = require('readline-sync');
+var ip = require("ip");
 
 /* ********DECLARACIÓN DE VARIABLES******** */
-var ipServidor = "10.9.10.120";
+var ipServidor = "127.0.0.1";
 var puertoServidor = 6969;
 
-var delay;
 var offset;
 
-var username;
+var username = "wence";
 
 //ip y puerto donde va a escuchar
 var cliente = new net.Socket();
-var ipCliente = cliente.address();
+var ipCliente = "127.0.0.1";
+//var ipCliente = ip.address();
 var puertoCliente = 6969;
-var connexiones;
+var conexiones;
 
 
 /* ************I/O DE CONSOLA*************** */
@@ -36,7 +37,6 @@ cliente.on('data', (data) => {
     var T1 = parseInt(tiempos[0]);
     var T2 = parseInt(tiempos[1]);
     var T3 = parseInt(tiempos[2]);
-    delay = ((T2 - T1) + (T4 - T3)) / 2;
     offset = ((T2 - T1) + (T3 - T4)) / 2;
 
     cliente.destroy();
@@ -44,10 +44,17 @@ cliente.on('data', (data) => {
 
 /* *****REGISTRO POR HTTP*** */
 
-http.get("http://" + ipServidor + ":" + puertoServidor + "/register?username=" + username + "&ip=" + ipCliente + "&port=" + puertoCliente, (response) => {
+http.get("http://" + ipServidor + ":" + puertoServidor + "/register?username=" + encodeURIComponent(username) + "&ip=" + encodeURIComponent(ipCliente) + "&port=" + encodeURIComponent(puertoCliente), (response) => {
     response.setEncoding('utf8');
+    var datos = "";
     response.on("data", (data) => {
-        console.log(data.toString());
-        connexiones = JSON.parse(data.toString());
+        datos += data.toString();
     });
+    response.on("end", () => {
+        conexiones = JSON.parse(datos);
+        console.log(conexiones);
+    });
+
+}).on("error", (er) => {
+    console.log(er.toString());
 });

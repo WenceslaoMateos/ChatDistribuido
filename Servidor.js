@@ -13,11 +13,11 @@ var registroClientes = [];
 /* ********OPERACIÓN DE LOS SERVIDORES******** */
 var servidorRegistro = http.createServer((req, res) => {
     var parseo, query, resultado, direccion, cliente;
-    if (req.method === "GET"){
+    if (req.method === "GET") {
         parseo = url.parse(req.url, true);
         direccion = parseo.pathname;
         query = parseo.query;
-        if (direccion === '/register'){
+        if (direccion === '/register') {
             try {
                 cliente = {
                     username: username,
@@ -32,7 +32,7 @@ var servidorRegistro = http.createServer((req, res) => {
                 });
                 res.end(JSON.stringify(registroClientes));
             }
-            catch (e){
+            catch (e) {
                 console.log(e);
                 res.writeHead(404);
                 res.end();
