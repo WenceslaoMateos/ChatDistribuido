@@ -8,56 +8,7 @@ var PORT = 6969;
 
 var delay = 256;
 
-/* ********DECLARACIÓN DE PROTOTIPOS******** */
-function Cliente(username, ip, port){
-    this.username = username;
-    this.ip = ip;
-    this.port = port;
-
-    this.getUsername = () => {
-        return this.username;
-    }
-
-    this.getIp = () => {
-        return this.ip;
-    }
-
-    this.getPort = () => {
-        return this.port;
-    }
-
-    this.toJSON = () => {
-        var externo = this;
-        return JSON.stringify({
-            username: externo.username,
-            ip: externo.ip,
-            port: externo.port
-        });
-    }
-}
-
-function RegistroClientes(){
-    this.clientes = [];
-
-    this.registrarCliente = (cliente) => {
-        this.clientes.push(cliente);
-    }
-    
-    this.toJSON = () => {
-        var longitud = this.clientes.length;
-        var i;
-        var res = "[";
-        if (longitud > 0){
-            for (i = 0; i < longitud - 1; i++)
-                res += this.clientes[i].toJSON() + ",";
-            res += this.clientes[i].toJSON();
-        }
-        res += "]";
-        return res;
-    }
-}
-
-var registro = new RegistroClientes();
+var registroClientes = [];
 
 /* ********OPERACIÓN DE LOS SERVIDORES******** */
 var servidorRegistro = http.createServer((req, res) => {
@@ -68,16 +19,18 @@ var servidorRegistro = http.createServer((req, res) => {
         query = parseo.query;
         if (direccion === '/register'){
             try {
-                cliente = new Cliente(query.username, query.ip, query.port);
+                cliente = {
+                    username: username,
+                    ip: ip,
+                    port: port
+                };
                 console.log(cliente);
-                registro.registrarCliente(cliente);
+                registroClientes.push(cliente);
                 res.writeHead(200, {
                     'Date': (new Date()).toString(),
-                    'Content-Length': 2,
                     'Content-Type': 'text/string'
                 });
-                console.log(registro.toJSON());
-                res.end(registro.toJSON());
+                res.end(JSON.stringify(registroClientes));
             }
             catch (e){
                 console.log(e);
