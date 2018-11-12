@@ -8,6 +8,31 @@ var HTTP_PORT = 4887;
 
 var registroClientes = [];
 
+function resHTML(){
+    var clientesConectados = "";
+    registroClientes.forEach(cliente => {
+        clientesConectados += `<ul>
+            <li><b>Nombre:</b> ` + cliente.username + `</li>
+            <li><b>IP:</b> ` + cliente.ip + `</li>
+            <li><b>Puerto:</b> ` + cliente.port + `</li>
+            <li><b>Hora de conexión:</b> ` + cliente.timestamp + `</li>
+        </ul>`;
+    });
+    return `<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8" />
+            <title>Mensajería</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
+        <body>
+            <h1>Clientes conectados: </h1>
+            <div id="panel-clientes">` + clientesConectados + `</div>
+        </body>
+        </html>
+    `;
+}
+
 /* ********SERVIDOR HTTP******** */
 var servidorRegistro = http.createServer((req, res) =>
 {
@@ -25,7 +50,8 @@ var servidorRegistro = http.createServer((req, res) =>
                 {
                     username: query.username,
                     ip: query.ip,
-                    port: query.port
+                    port: query.port,
+                    timestamp: (new Date()).toString()
                 };
                 console.log(cliente);
                 res.writeHead(200,
@@ -38,6 +64,21 @@ var servidorRegistro = http.createServer((req, res) =>
             }
             catch (e)
             {
+                console.log(e);
+                res.writeHead(404);
+                res.end();
+            }
+        }
+        else if (direccion == '/consult'){
+            try {
+                res.writeHead(200,
+                {
+                    'Date': (new Date()).toString(),
+                    'Content-Type': 'text/html'
+                });
+                res.end(resHTML());
+            }
+            catch (e){
                 console.log(e);
                 res.writeHead(404);
                 res.end();
