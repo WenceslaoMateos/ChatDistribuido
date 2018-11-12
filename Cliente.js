@@ -140,11 +140,11 @@ rl.on('line', (line) =>
     if (datos.length == 1)
     {
         mensaje.to = 'all';
-        mensaje = JSON.stringify(mensaje);
+        var mensajeJSON = JSON.stringify(mensaje);
         for (const [name, nodo] of nodos.entries())
         {
             try {
-                nodo.write(mensaje);
+                nodo.write(mensajeJSON);
                 console.log('Mensaje enviado a ' + name);
             }
             catch (e){
@@ -159,8 +159,8 @@ rl.on('line', (line) =>
         {
             try {
                 mensaje.to = datos[i];
-                var privado = JSON.stringify(mensaje);
-                nodos.get(datos[i]).write(privado);
+                var mensajeJSON = JSON.stringify(mensaje);
+                nodos.get(datos[i]).write(mensajeJSON);
                 console.log('Mensaje enviado a ' + datos[i]);
             }
             catch (e){
