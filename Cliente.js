@@ -141,8 +141,14 @@ rl.on('line', (line) =>
         mensaje = JSON.stringify(mensaje);
         for (const [name, nodo] of nodos.entries())
         {
-            nodo.write(mensaje);
-            console.log('Mensaje enviado a ' + name);
+            try {
+                nodo.write(mensaje);
+                console.log('Mensaje enviado a ' + name);
+            }
+            catch (e){
+                console.log(name + " se ha desconectado.");
+                nodos.delete(name);
+            }
         }
         console.log(username + ': ' + line);
     }
@@ -150,11 +156,17 @@ rl.on('line', (line) =>
     {
         for (var i = 1; i < datos.length; i++)
         {
-            mensaje.to = datos[i];
-            var privado = JSON.stringify(mensaje);
-            nodos.get(datos[i]).write(privado);
-            console.log('Mensaje enviado a ' + datos[i]);
-            console.log(username + ': ' + line);
+            try {
+                mensaje.to = datos[i];
+                var privado = JSON.stringify(mensaje);
+                nodos.get(datos[i]).write(privado);
+                console.log('Mensaje enviado a ' + datos[i]);
+                console.log(username + ': ' + line);
+            }
+            catch (e){
+                console.log(name + " se ha desconectado.");
+                nodos.delete(name);
+            }
         }
     }
 
