@@ -107,16 +107,21 @@ function conectarNodos(conexiones)
     conexiones.forEach(c =>
     {
         nodos.set(c.username, new net.Socket());
-        nodos.get(c.username).connect(c.port, c.ip, () =>
-        {
-            console.log('Conectado con ' + c.username);
-            nodos.get(c.username).write(JSON.stringify(
+        try {
+            nodos.get(c.username).connect(c.port, c.ip, () =>
             {
-                username: username,
-                ip: ipCliente,
-                port: puertoCliente
-            }));
-        });
+                console.log('Conectado con ' + c.username);
+                nodos.get(c.username).write(JSON.stringify(
+                {
+                    username: username,
+                    ip: ipCliente,
+                    port: puertoCliente
+                }));
+            });
+        }
+        catch (e){
+            nodos.delete(c.username);
+        }
     });
 }
 
