@@ -152,7 +152,6 @@ rl.on('line', (line) =>
                 nodos.delete(name);
             }
         }
-        console.log(username + ': ' + line);
     }
     else
     {
@@ -163,7 +162,6 @@ rl.on('line', (line) =>
                 var privado = JSON.stringify(mensaje);
                 nodos.get(datos[i]).write(privado);
                 console.log('Mensaje enviado a ' + datos[i]);
-                console.log(username + ': ' + line);
             }
             catch (e){
                 console.log(name + " se ha desconectado.");
@@ -171,6 +169,5 @@ rl.on('line', (line) =>
             }
         }
     }
-
-    
+    console.log(username + ': ' + line + ' - ' + new Date(mensaje.timestamp + mensaje.offset));
 });
