@@ -169,15 +169,18 @@ rl.on('line', (line) =>
     {
         for (var i = 1; i < datos.length; i++)
         {
-            try {
-                mensaje.to = datos[i];
-                var mensajeJSON = JSON.stringify(mensaje);
-                nodos.get(datos[i]).write(mensajeJSON);
-                console.log('Mensaje enviado a ' + datos[i]);
-            }
-            catch (e){
-                console.log(name + " se ha desconectado.");
-                nodos.delete(name);
+            if (nodos.has(datos[i]))
+            {
+                try {
+                    mensaje.to = datos[i];
+                    var mensajeJSON = JSON.stringify(mensaje);
+                    nodos.get(datos[i]).write(mensajeJSON);
+                    console.log('Mensaje enviado a ' + datos[i]);
+                }
+                catch (e){
+                    console.log(datos[i] + " se ha desconectado.");
+                    nodos.delete(datos[i]);
+                }
             }
         }
     }
