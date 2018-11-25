@@ -48,13 +48,15 @@ clienteNTP.on('data', (data) =>
 /* ********CREACIÓN DEL NODO******** */
 var nodo = net.createServer(socket =>
 {
+    let name = '';
     socket.on('data', data =>
     {
         var datos = JSON.parse(data);
         if ('username' in datos)
         {
-            nodos.set(datos.username, socket);
-            console.log('Conectado con ' + datos.username);
+            name = datos.username;
+            nodos.set(name, socket);
+            console.log('Conectado con ' + name);
         }
         else if ('message' in datos)
         {
@@ -62,6 +64,14 @@ var nodo = net.createServer(socket =>
                 console.log(datos.from + ': ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
             else if (datos.to == username)
                 console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
+        }
+    });
+    socket.on('error', error =>
+    {
+        if ( name != '' && nodos.has(name))
+        {
+            console.log(name + " se ha desconectado.");
+            nodos.delete(name);
         }
     });
 });
@@ -131,6 +141,14 @@ function conectarNodos(conexiones)
                     console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
             }
         });
+        socket.on('error', error =>
+        {
+            if (nodos.has(c.username))
+            {
+                console.log(c.username + " se ha desconectado.");
+                nodos.delete(c.username);
+            }
+        });
     });
 }
 
@@ -155,14 +173,8 @@ rl.on('line', (line) =>
         var mensajeJSON = JSON.stringify(mensaje);
         for (const [name, nodo] of nodos.entries())
         {
-            try {
-                nodo.write(mensajeJSON);
-                console.log('Mensaje enviado a ' + name);
-            }
-            catch (e){
-                console.log(name + " se ha desconectado.");
-                nodos.delete(name);
-            }
+            nodo.write(mensajeJSON);
+            console.log('Mensaje enviado a ' + name);
         }
     }
     else
@@ -171,16 +183,10 @@ rl.on('line', (line) =>
         {
             if (nodos.has(datos[i]))
             {
-                try {
-                    mensaje.to = datos[i];
-                    var mensajeJSON = JSON.stringify(mensaje);
-                    nodos.get(datos[i]).write(mensajeJSON);
-                    console.log('Mensaje enviado a ' + datos[i]);
-                }
-                catch (e){
-                    console.log(datos[i] + " se ha desconectado.");
-                    nodos.delete(datos[i]);
-                }
+                mensaje.to = datos[i];
+                var mensajeJSON = JSON.stringify(mensaje);
+                nodos.get(datos[i]).write(mensajeJSON);
+                console.log('Mensaje enviado a ' + datos[i]);
             }
         }
     }
