@@ -53,11 +53,8 @@ var nodo = net.createServer(socket =>
         var datos = JSON.parse(data);
         if ('username' in datos)
         {
-            nodos.set(datos.username, new net.Socket());
-            nodos.get(datos.username).connect(datos.port, datos.ip, () =>
-            {
-                console.log('Conectado con ' + datos.username);
-            });
+            nodos.set(datos.username, socket);
+            console.log('Conectado con ' + datos.username);
         }
         else if ('message' in datos)
         {
@@ -66,7 +63,7 @@ var nodo = net.createServer(socket =>
             else if (datos.to == username)
                 console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
         }
-    })
+    });
 });
 nodo.listen(puertoCliente, () =>
 {
@@ -107,7 +104,7 @@ function conectarNodos(conexiones)
     conexiones.forEach(c =>
     {
         let socket = new net.Socket();
-        socket.connect(c.port, c.ip, () =>
+        socket.connect(c.port, c.ip, ipCliente, puertoCliente, () =>
         {
             console.log('Conectado con ' + c.username);
             socket.write(JSON.stringify(
@@ -118,7 +115,22 @@ function conectarNodos(conexiones)
             }));
             nodos.set(c.username, socket);
         });
-        socket.on('error', () => {});
+        socket.on('data', data =>
+        {
+            var datos = JSON.parse(data);
+            if ('username' in datos)
+            {
+                nodos.set(datos.username, socket);
+                console.log('Conectado con ' + datos.username)
+            }
+            else if ('message' in datos)
+            {
+                if (datos.to == 'all')
+                    console.log(datos.from + ': ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
+                else if (datos.to == username)
+                    console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
+            }
+        });
     });
 }
 
