@@ -23,7 +23,7 @@ var topicoLED;
 var topicoMotor;
 var ubicacion;
 
-var ipMQTT = '10.2.253.16';
+var ipMQTT = 'mqtt.fi.mdp.edu.ar';
 var portMQTT = 1883;
 var clienteMQTT;
 
