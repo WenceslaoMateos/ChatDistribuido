@@ -5,6 +5,7 @@
   "main": "Cliente.js",
   "dependencies": {
     "ip": "^1.1.5",
+    "mqtt": "^2.18.8",
     "readline-sync": "^1.4.9"
   },
   "devDependencies": {},
