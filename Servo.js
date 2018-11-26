@@ -74,7 +74,7 @@ function publicarMQTT(mensaje, timestamp){
     else if(mensaje.includes('Girar motor a ')){
         var tokens = mensaje.split(' ');
         try {
-            console.log(tokens);
+            var grados = parseInt(tokens[3]);
             clienteMQTT.publish(topicoMotor, JSON.stringify(
                 {
                     valor: grados,
