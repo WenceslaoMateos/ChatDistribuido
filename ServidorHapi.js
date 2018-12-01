@@ -76,7 +76,7 @@ servidorRegistro.route({
 
 var init = async () => {
     await servidorRegistro.start();
-    console.log('Se ha generado el servidor NTP');
+    console.log('Se ha generado el servidor HTTP');
 };
 
 process.on('unhandledRejection', (err) => {
