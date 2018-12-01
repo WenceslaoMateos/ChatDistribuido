@@ -96,7 +96,7 @@ clienteNTP.connect(NTP_PORT, ipServidor, () => {
 
 clienteNTP.on('data', (data) => {
     var T4 = (new Date()).getTime();
-    var tiempos = data.toString().split(",");
+    var tiempos = data.toString().split(',');
     var T1 = parseInt(tiempos[0]);
     var T2 = parseInt(tiempos[1]);
     var T3 = parseInt(tiempos[2]);
@@ -124,7 +124,7 @@ var nodo = net.createServer(socket => {
     });
     socket.on('error', error => {
         if (name != '' && nodos.has(name)) {
-            console.log(name + " se ha desconectado.");
+            console.log(name + ' se ha desconectado.');
             nodos.delete(name);
         }
     });
@@ -139,18 +139,18 @@ nodo.on('connection', () => {
 
 /* ********REGISTRO POR HTTP******** */
 function registroHTTP() {
-    http.get("http://" + ipServidor + ":" + HTTP_PORT + "/register?username=" + encodeURIComponent(username) + "&ip=" + encodeURIComponent(ipCliente) + "&port=" + encodeURIComponent(puertoCliente), (response) => {
+    http.get('http://' + ipServidor + ':' + HTTP_PORT + '/register?username=' + encodeURIComponent(username) + '&ip=' + encodeURIComponent(ipCliente) + '&port=' + encodeURIComponent(puertoCliente), (response) => {
         response.setEncoding('utf8');
-        var datos = "";
-        response.on("data", (data) => {
+        var datos = '';
+        response.on('data', (data) => {
             datos += data.toString();
         });
-        response.on("end", () => {
+        response.on('end', () => {
             var conexiones = JSON.parse(datos);
             console.log(conexiones);
             conectarNodos(conexiones);
         });
-    }).on("error", (er) => {
+    }).on('error', (er) => {
         console.log(er.toString());
     });
 }
@@ -184,7 +184,7 @@ function conectarNodos(conexiones) {
         });
         socket.on('error', error => {
             if (nodos.has(c.username)) {
-                console.log(c.username + " se ha desconectado.");
+                console.log(c.username + ' se ha desconectado.');
                 nodos.delete(c.username);
             }
         });

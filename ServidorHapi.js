@@ -1,6 +1,4 @@
 var net = require('net');
-var http = require('http');
-var url = require('url');
 var hapi = require('hapi');
 
 /* ********DECLARACIÓN DE VARIABLES******** */
@@ -10,7 +8,7 @@ var HTTP_PORT = 4887;
 var registroClientes = [];
 
 function resHTML() {
-    var clientesConectados = "";
+    var clientesConectados = '';
     registroClientes.forEach(cliente => {
         clientesConectados += `<ul>
             <li><b>Nombre:</b> ` + cliente.username + `</li>
@@ -95,7 +93,7 @@ var server = net.createServer((sock) => {
     sock.on('data', (data) => {
         var T2 = (new Date()).getTime();
         var T3 = (new Date()).getTime();
-        sock.write(data.toString() + "," + T2.toString() + "," + T3.toString());
+        sock.write(data.toString() + ',' + T2.toString() + ',' + T3.toString());
     });
 }).listen(NTP_PORT, () => {
     console.log('Se ha generado el servidor');
