@@ -6,7 +6,7 @@ var mqtt = require('mqtt');
 
 /* ********DECLARACIÓN DE VARIABLES******** */
 var ipServidor;
-var NTP_PORT = 687;
+var NTP_PORT = 6887;
 var HTTP_PORT = 4887;
 
 var offset;

@@ -2,7 +2,7 @@ var net = require('net');
 var hapi = require('hapi');
 
 /* ********DECLARACIÓN DE VARIABLES******** */
-var NTP_PORT = 687;
+var NTP_PORT = 6887;
 var HTTP_PORT = 4887;
 
 var registroClientes = [];
