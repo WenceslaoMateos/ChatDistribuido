@@ -116,17 +116,11 @@ var nodo = net.createServer(socket => {
             console.log('Conectado con ' + name);
         }
         else if ('message' in datos) {
-            if (datos.to == username) {
-                console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
-                publicarMQTT(datos.message, datos.timestamp);
-            }
+            onMessage(datos);
         }
     });
-    socket.on('error', error => {
-        if (name != '' && nodos.has(name)) {
-            console.log(name + ' se ha desconectado.');
-            nodos.delete(name);
-        }
+    socket.on('error', () => {
+        onError(name);
     });
 });
 nodo.listen(puertoCliente, () => {
@@ -171,22 +165,28 @@ function conectarNodos(conexiones) {
         });
         socket.on('data', data => {
             var datos = JSON.parse(data);
-            if ('username' in datos) {
-                nodos.set(datos.username, socket);
-                console.log('Conectado con ' + datos.username)
-            }
-            else if ('message' in datos) {
-                if (datos.to == username) {
-                    console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
-                    publicarMQTT(datos.message, datos.timestamp);
-                }
+            if ('message' in datos) {
+                onMessage(datos);
             }
         });
-        socket.on('error', error => {
-            if (nodos.has(c.username)) {
-                console.log(c.username + ' se ha desconectado.');
-                nodos.delete(c.username);
-            }
+        socket.on('error', () => {
+            onError(c.username);
         });
     });
+}
+
+/* ********RECEPCIÓN DE MENSAJES******** */
+function onMessage(datos) {
+    if (datos.to == username) {
+        console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
+        publicarMQTT(datos.message, datos.timestamp);
+    }
+}
+
+/* ********DESCONEXIÓN DE UN NODO******** */
+function onError(name) {
+    if (nodos.has(name)) {
+        console.log(name + ' se ha desconectado.');
+        nodos.delete(name);
+    }
 }

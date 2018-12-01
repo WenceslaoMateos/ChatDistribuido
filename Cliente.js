@@ -65,9 +65,6 @@ nodo.listen(puertoCliente, () => {
     console.log('Recibiendo mensajes en ' + ipCliente + ':' + puertoCliente);
     registroHTTP();
 });
-nodo.on('connection', () => {
-    console.log('Usuario conectado');
-});
 
 /* ********REGISTRO POR HTTP******** */
 function registroHTTP() {

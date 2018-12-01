@@ -27,10 +27,9 @@ function resHTML() {
         </head>
         <body>
             <h1>Clientes conectados: </h1>
-            <div id="panel-clientes">` + clientesConectados + `</div>
+            <div>` + clientesConectados + `</div>
         </body>
-        </html>
-    `;
+        </html>`;
 }
 
 /* ********SERVIDOR HTTP******** */
@@ -90,19 +89,16 @@ var server = net.createServer((sock) => {
         var T3 = (new Date()).getTime();
         sock.write(data.toString() + ',' + T2.toString() + ',' + T3.toString());
     });
-    sock.on('end', () => {
-        console.log('Se ha desconectado el usuario');
-    });
-}).listen(NTP_PORT, () => {
+});
+server.listen(NTP_PORT, () => {
     console.log('Se ha generado el servidor');
 });
-
 server.on('connection', () => {
     console.log('Se han conectado al servidor');
-})
+});
 server.on('error', () => {
     console.log('Ha ocurrido un error');
-})
+});
 server.on('close', () => {
     console.log('Se cerro el servidor');
-})
+});
