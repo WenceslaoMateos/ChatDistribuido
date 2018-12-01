@@ -8,7 +8,7 @@ var HTTP_PORT = 4887;
 
 var registroClientes = [];
 
-function resHTML(){
+function resHTML() {
     var clientesConectados = "";
     registroClientes.forEach(cliente => {
         clientesConectados += `<ul>
@@ -34,51 +34,46 @@ function resHTML(){
 }
 
 /* ********SERVIDOR HTTP******** */
-var servidorRegistro = http.createServer((req, res) =>
-{
+var servidorRegistro = http.createServer((req, res) => {
     var parseo, query, direccion, cliente;
-    if (req.method == 'GET')
-    {
+    if (req.method == 'GET') {
         parseo = url.parse(req.url, true);
         direccion = parseo.pathname;
         query = parseo.query;
-        if (direccion == '/register')
-        {
-            try
-            {
+        if (direccion == '/register') {
+            try {
                 cliente =
-                {
-                    username: query.username,
-                    ip: query.ip,
-                    port: query.port,
-                    timestamp: (new Date()).toString()
-                };
+                    {
+                        username: query.username,
+                        ip: query.ip,
+                        port: query.port,
+                        timestamp: (new Date()).toString()
+                    };
                 console.log(cliente);
                 res.writeHead(200,
-                {
-                    'Date': (new Date()).toString(),
-                    'Content-Type': 'text/string'
-                });
+                    {
+                        'Date': (new Date()).toString(),
+                        'Content-Type': 'text/string'
+                    });
                 res.end(JSON.stringify(registroClientes));
                 registroClientes.push(cliente);
             }
-            catch (e)
-            {
+            catch (e) {
                 console.log(e);
                 res.writeHead(404);
                 res.end();
             }
         }
-        else if (direccion == '/consult'){
+        else if (direccion == '/consult') {
             try {
                 res.writeHead(200,
-                {
-                    'Date': (new Date()).toString(),
-                    'Content-Type': 'text/html'
-                });
+                    {
+                        'Date': (new Date()).toString(),
+                        'Content-Type': 'text/html'
+                    });
                 res.end(resHTML());
             }
-            catch (e){
+            catch (e) {
                 console.log(e);
                 res.writeHead(404);
                 res.end();
@@ -89,32 +84,25 @@ var servidorRegistro = http.createServer((req, res) =>
 servidorRegistro.listen(HTTP_PORT);
 
 /* ********SERVIDOR NTP******** */
-var server = net.createServer((sock) =>
-{
-    sock.on('data', (data) =>
-    {
+var server = net.createServer((sock) => {
+    sock.on('data', (data) => {
         var T2 = (new Date()).getTime();
         var T3 = (new Date()).getTime();
         sock.write(data.toString() + "," + T2.toString() + "," + T3.toString());
     });
-    sock.on("end", () =>
-    {
+    sock.on("end", () => {
         console.log('Se ha desconectado el usuario');
     });
-}).listen(NTP_PORT, () =>
-{
+}).listen(NTP_PORT, () => {
     console.log('Se ha generado el servidor');
 });
 
-server.on('connection', () =>
-{
+server.on('connection', () => {
     console.log('Se han conectado al servidor');
 })
-server.on('error', () =>
-{
+server.on('error', () => {
     console.log('Ha ocurrido un error');
 })
-server.on('close', () =>
-{
+server.on('close', () => {
     console.log('Se cerro el servidor');
 })

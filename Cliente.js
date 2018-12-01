@@ -27,14 +27,12 @@ ipCliente = readlineSync.question('Escriba su IP: ');
 ipServidor = readlineSync.question('Escriba la IP del servidor: ');
 
 /* ********CALCULO DE RELOJES******** */
-clienteNTP.connect(NTP_PORT, ipServidor, () =>
-{
+clienteNTP.connect(NTP_PORT, ipServidor, () => {
     var T1 = (new Date()).getTime();
     clienteNTP.write(T1.toString());
 });
 
-clienteNTP.on('data', (data) =>
-{
+clienteNTP.on('data', (data) => {
     var T4 = (new Date()).getTime();
     var tiempos = data.toString().split(",");
     var T1 = parseInt(tiempos[0]);
@@ -46,105 +44,84 @@ clienteNTP.on('data', (data) =>
 });
 
 /* ********CREACIÓN DEL NODO******** */
-var nodo = net.createServer(socket =>
-{
+var nodo = net.createServer(socket => {
     let name = '';
-    socket.on('data', data =>
-    {
+    socket.on('data', data => {
         var datos = JSON.parse(data);
-        if ('username' in datos)
-        {
+        if ('username' in datos) {
             name = datos.username;
             nodos.set(name, socket);
             console.log('Conectado con ' + name);
         }
-        else if ('message' in datos)
-        {
+        else if ('message' in datos) {
             if (datos.to == 'all')
                 console.log(datos.from + ': ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
             else if (datos.to == username)
                 console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
         }
     });
-    socket.on('error', error =>
-    {
-        if ( name != '' && nodos.has(name))
-        {
+    socket.on('error', error => {
+        if (name != '' && nodos.has(name)) {
             console.log(name + " se ha desconectado.");
             nodos.delete(name);
         }
     });
 });
-nodo.listen(puertoCliente, () =>
-{
+nodo.listen(puertoCliente, () => {
     console.log('Recibiendo mensajes en ' + ipCliente + ':' + puertoCliente);
     registroHTTP();
 });
-nodo.on('connection', () =>
-{
+nodo.on('connection', () => {
     console.log('Usuario conectado');
 });
 
 /* ********REGISTRO POR HTTP******** */
-function registroHTTP()
-{
-    http.get("http://" + ipServidor + ":" + HTTP_PORT + "/register?username=" + encodeURIComponent(username) + "&ip=" + encodeURIComponent(ipCliente) + "&port=" + encodeURIComponent(puertoCliente), (response) =>
-    {
+function registroHTTP() {
+    http.get("http://" + ipServidor + ":" + HTTP_PORT + "/register?username=" + encodeURIComponent(username) + "&ip=" + encodeURIComponent(ipCliente) + "&port=" + encodeURIComponent(puertoCliente), (response) => {
         response.setEncoding('utf8');
         var datos = "";
-        response.on("data", (data) =>
-        {
+        response.on("data", (data) => {
             datos += data.toString();
         });
-        response.on("end", () =>
-        {
+        response.on("end", () => {
             var conexiones = JSON.parse(datos);
             console.log(conexiones);
             conectarNodos(conexiones);
         });
-    }).on("error", (er) =>
-    {
+    }).on("error", (er) => {
         console.log(er.toString());
     });
 }
 
 /* ********CONEXIÓN CON NODOS******** */
-function conectarNodos(conexiones)
-{
-    conexiones.forEach(c =>
-    {
+function conectarNodos(conexiones) {
+    conexiones.forEach(c => {
         let socket = new net.Socket();
-        socket.connect(c.port, c.ip, ipCliente, puertoCliente, () =>
-        {
+        socket.connect(c.port, c.ip, ipCliente, puertoCliente, () => {
             console.log('Conectado con ' + c.username);
             socket.write(JSON.stringify(
-            {
-                username: username,
-                ip: ipCliente,
-                port: puertoCliente
-            }));
+                {
+                    username: username,
+                    ip: ipCliente,
+                    port: puertoCliente
+                }));
             nodos.set(c.username, socket);
         });
-        socket.on('data', data =>
-        {
+        socket.on('data', data => {
             var datos = JSON.parse(data);
-            if ('username' in datos)
-            {
+            if ('username' in datos) {
                 nodos.set(datos.username, socket);
                 console.log('Conectado con ' + datos.username)
             }
-            else if ('message' in datos)
-            {
+            else if ('message' in datos) {
                 if (datos.to == 'all')
                     console.log(datos.from + ': ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
                 else if (datos.to == username)
                     console.log('[' + datos.from + ']: ' + datos.message + ' - ' + new Date(datos.timestamp + datos.offset));
             }
         });
-        socket.on('error', error =>
-        {
-            if (nodos.has(c.username))
-            {
+        socket.on('error', error => {
+            if (nodos.has(c.username)) {
                 console.log(c.username + " se ha desconectado.");
                 nodos.delete(c.username);
             }
@@ -157,8 +134,7 @@ var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-rl.on('line', (line) =>
-{
+rl.on('line', (line) => {
     var datos = line.split('@');
     var mensaje = {
         from: username,
@@ -167,22 +143,17 @@ rl.on('line', (line) =>
         timestamp: (new Date()).getTime(),
         offset: offset
     };
-    if (datos.length == 1)
-    {
+    if (datos.length == 1) {
         mensaje.to = 'all';
         var mensajeJSON = JSON.stringify(mensaje);
-        for (const [name, nodo] of nodos.entries())
-        {
+        for (const [name, nodo] of nodos.entries()) {
             nodo.write(mensajeJSON);
             console.log('Mensaje enviado a ' + name);
         }
     }
-    else
-    {
-        for (var i = 1; i < datos.length; i++)
-        {
-            if (nodos.has(datos[i]))
-            {
+    else {
+        for (var i = 1; i < datos.length; i++) {
+            if (nodos.has(datos[i])) {
                 mensaje.to = datos[i];
                 var mensajeJSON = JSON.stringify(mensaje);
                 nodos.get(datos[i]).write(mensajeJSON);
