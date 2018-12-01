@@ -76,7 +76,7 @@ servidorRegistro.route({
 
 var init = async () => {
     await servidorRegistro.start();
-    console.log(`Se ha generado el servidor`);
+    console.log('Se ha generado el servidor NTP');
 };
 
 process.on('unhandledRejection', (err) => {
@@ -95,14 +95,14 @@ var server = net.createServer((sock) => {
     });
 });
 server.listen(NTP_PORT, () => {
-    console.log('Se ha generado el servidor');
+    console.log('Se ha generado el servidor NTP');
 });
 server.on('connection', () => {
-    console.log('Se han conectado al servidor');
+    console.log('Se han conectado al servidor NTP');
 });
 server.on('error', () => {
-    console.log('Ha ocurrido un error');
+    console.log('Ha ocurrido un error en el servidor NTP');
 });
 server.on('close', () => {
-    console.log('Se cerro el servidor');
+    console.log('Se cerro el servidor NTP');
 });
