@@ -54,7 +54,7 @@ void loop()
 
 void callback(const char topic[], byte* payload, unsigned int length)
 {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(3)> jb;
+  StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jb;
   JsonObject& obj = jb.parseObject((char*) payload);
   
   if (!strcmp(topic, ledTopic))
@@ -75,10 +75,13 @@ void callback(const char topic[], byte* payload, unsigned int length)
   else if (!strcmp(topic, motorTopic))
   {
     int valor = obj["valor"];
-    char msg[20];
-    sprintf(msg, "Girar motor a %d", valor);
-    Serial.println(msg);
-    servo.write(valor);
+    if (valor >= 0 && valor <= 180)
+    {
+      char msg[20];
+      sprintf(msg, "Girar motor a %d", valor);
+      Serial.println(msg);
+      servo.write(valor);
+    }
   }
 }
 
