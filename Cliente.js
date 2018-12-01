@@ -129,7 +129,6 @@ rl.on('line', (line) => {
         var mensajeJSON = JSON.stringify(mensaje);
         for (const [name, nodo] of nodos.entries()) {
             nodo.write(mensajeJSON);
-            console.log('Mensaje enviado a ' + name);
         }
     }
     else {
@@ -138,7 +137,6 @@ rl.on('line', (line) => {
                 mensaje.to = datos[i];
                 var mensajeJSON = JSON.stringify(mensaje);
                 nodos.get(datos[i]).write(mensajeJSON);
-                console.log('Mensaje enviado a ' + datos[i]);
             }
         }
     }
