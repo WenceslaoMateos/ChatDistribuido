@@ -11,12 +11,12 @@ var registroClientes = [];
 function resHTML() {
     var clientesConectados = '';
     registroClientes.forEach(cliente => {
-        clientesConectados += `<ul>
-            <li><b>Nombre:</b> ` + cliente.username + `</li>
-            <li><b>IP:</b> ` + cliente.ip + `</li>
-            <li><b>Puerto:</b> ` + cliente.port + `</li>
-            <li><b>Hora de conexión:</b> ` + cliente.timestamp + `</li>
-        </ul>`;
+        clientesConectados += `<tr>
+            <td>` + cliente.username + `</td>
+            <td>` + cliente.ip + `</td>
+            <td>` + cliente.port + `</td>
+            <td>` + cliente.timestamp + `</td>
+        </tr>`;
     });
     return `<!DOCTYPE html>
         <html>
@@ -24,10 +24,32 @@ function resHTML() {
             <meta charset="utf-8" />
             <title>Mensajería</title>
             <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+                table, th, td {
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                }
+
+                th, td {
+                    padding: 1em;
+                }
+            </style>
         </head>
         <body>
             <h1>Clientes conectados: </h1>
-            <div>` + clientesConectados + `</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>IP</th>
+                        <th>Puerto</th>
+                        <th>Hora de conexión</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    `+ clientesConectados + `
+                </tbody>
+            </table>
         </body>
         </html>`;
 }
