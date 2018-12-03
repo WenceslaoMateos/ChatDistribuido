@@ -3,8 +3,8 @@
 #include <PubSubClient.h>
 #include <Servo.h>
 
-char ssid[] = "Lanzi WiFi";
-char pass[] = "lola1110";
+char ssid[] = "patronatofi";
+char pass[] = "";
 
 char addr[] = "mqtt.fi.mdp.edu.ar";
 int port = 1883;
