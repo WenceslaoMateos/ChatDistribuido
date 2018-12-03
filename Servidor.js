@@ -105,13 +105,13 @@ var servidorRegistro = http.createServer((req, res) => {
 servidorRegistro.listen(HTTP_PORT, () => {
     console.log('Se ha generado el servidor HTTP');
 });
-server.on('connection', () => {
+servidorRegistro.on('connection', () => {
     console.log('Se han conectado al servidor HTTP');
 });
-server.on('error', () => {
+servidorRegistro.on('error', () => {
     console.log('Ha ocurrido un error en el servidor HTTP');
 });
-server.on('close', () => {
+servidorRegistro.on('close', () => {
     console.log('Se cerro el servidor HTTP');
 });
 
