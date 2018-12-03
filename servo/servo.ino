@@ -44,11 +44,6 @@ void setup()
 
 void loop()
 {
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.println("Desconectado de WiFi");
-    connection();
-  }
   client.loop();
 }
 
@@ -88,7 +83,8 @@ void callback(const char topic[], byte* payload, unsigned int length)
 void connection()
 {
   WiFi.begin(ssid, pass);
-  while (WiFi.status() != WL_CONNECTED)
+  WiFi.setAutoReconnect(true);
+  while (!WiFi.isConnected())
     delay(pause);
   Serial.println("Conectado a WiFi");
 
